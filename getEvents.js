@@ -16,7 +16,6 @@ function prettyTimeString(dateObject) {
 }
 
 function sortByTime(a, b) {
-  console.log("yo", a.time, b.time);
   if (a.time < b.time) return -1;
   if (a.time > b.time) return 1;
   return 0;
@@ -51,20 +50,18 @@ const getDoc = async () => {
   }
 
   await doc.loadInfo();
-  const sheet = doc.sheetsByIndex[5];
+  const sheet = doc.sheetsByIndex.find(
+    (sheet) => sheet._rawProperties.title.toLowerCase() === "kombinert"
+  );
+  if (!sheet) return [];
   const rows = await sheet.getRows();
-
+  const headers = rows[0]._sheet.headerValues;
   const cleanRows = rows.map((row) => {
     let newRow = {};
-    newRow.area = row._rawData[0];
-    newRow.day = row._rawData[1];
-    newRow.time = row._rawData[2];
-    newRow.timestamp = row._rawData[3];
-    newRow.title = row._rawData[4];
-    newRow.description = row._rawData[5];
-    newRow.photo = row._rawData[6];
-    newRow.location = row._rawData[7];
-    if (newRow.photo.includes("drive.google.com/open")) {
+    headers.forEach((header, index) => {
+      newRow[header.toLowerCase()] = row._rawData[index];
+    });
+    if (newRow && newRow.photo.includes("drive.google.com/open")) {
       newRow.photo =
         "https://drive.google.com/thumbnail?authuser=0&sz=w320&id=" +
         newRow.photo.split("=")[1];
