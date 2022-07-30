@@ -7,7 +7,8 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-const sheetRoutes = require("./routes/sheet.js");
+const calendarRoutes = require("./routes/calendar.js");
+const kioskMenuRoutes = require("./routes/kioskMenu.js");
 
 const app = express();
 
@@ -16,7 +17,8 @@ app.use(cors());
 // parse application/json
 app.use(bodyParser.json());
 
-app.use("/api/calendar", sheetRoutes);
+app.use("/calendar/api", calendarRoutes);
+app.use("/kiosk/api", kioskMenuRoutes);
 
 const port = process.env.PORT || 5000;
 app.listen(port);
